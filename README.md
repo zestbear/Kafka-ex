@@ -1,0 +1,2 @@
+# Kafka-ex
+Studying Kafka
