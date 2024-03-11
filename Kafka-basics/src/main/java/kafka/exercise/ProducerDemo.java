@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-public class KafkaDemo {
+public class ProducerDemo {
 
-    private static final Logger log = LoggerFactory.getLogger(KafkaDemo.class.getSimpleName());
+    private static final Logger log = LoggerFactory.getLogger(ProducerDemo.class.getSimpleName());
 
     public static void main(String[] args) {
         log.info("The Kafka Producer");

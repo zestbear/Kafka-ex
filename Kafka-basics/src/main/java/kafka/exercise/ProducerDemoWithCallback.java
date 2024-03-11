@@ -1,18 +1,15 @@
 package kafka.exercise;
 
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
-public class KafkaDemoKeys {
+public class ProducerDemoWithCallback {
 
-    private static final Logger log = LoggerFactory.getLogger(KafkaDemoKeys.class.getSimpleName());
+    private static final Logger log = LoggerFactory.getLogger(ProducerDemoWithCallback.class.getSimpleName());
 
     public static void main(String[] args) {
         log.info("The Kafka Producer");
@@ -25,19 +22,16 @@ public class KafkaDemoKeys {
         properties.setProperty("key.serializer", StringSerializer.class.getName());
         properties.setProperty("value.serializer", StringSerializer.class.getName());
 
-
+        properties.setProperty("batch.size", "400");
+//        properties.setProperty("partitioner.class", RoundRobinPartitioner.class.getName());
 
         // create the Producer
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
-        for (int j = 0; j < 2; j++) {
-            for (int i = 0; i < 10; i++) {
-
-                String topic = "demo_kafka";
-                String key = "id_" + i;
-                String value = "value_" + i;
+        for (int j = 0; j < 10; j++) {
+            for (int i = 0; i < 30; i++) {
                 // create a Producer Record
-                ProducerRecord<String, String> producerRecord = new ProducerRecord<>("demo-kafka", key, value);
+                ProducerRecord<String, String> producerRecord = new ProducerRecord<>("demo-kafka", "hello world" + i);
 
                 // send data
                 // 비동기식
@@ -47,7 +41,11 @@ public class KafkaDemoKeys {
                         // executes every time a record successfully sent or an exception is thrown
                         if (e == null) {
                             // the record was successfully sent
-                            log.info("Key: " + key + " | Partition: " + metadata.partition());
+                            log.info("Received new metadata \n" +
+                                    "Topic: " + metadata.topic() + "\n" +
+                                    "Partition: " + metadata.partition() + "\n" +
+                                    "Offset: " + metadata.offset() + "\n" +
+                                    "TimeStamp: " + metadata.timestamp());
                         } else {
                             log.error("Error while producing", e);
                         }
